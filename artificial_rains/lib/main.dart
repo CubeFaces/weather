@@ -360,12 +360,15 @@ class _MyAppState extends State<MyApp> {
                   child: Center(
                     child: SizedBox(
                       width: 400,
-                      height: 420,
+                      height: 440,
                       child: Card(
                         color: Colors.lightBlue[50],
                         elevation: 5,
                         child: Column(
                           children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
                             const Image(
                               height: 200,
                               width: 200,
@@ -577,365 +580,385 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget buildConditionsPage() {
-    return Center(
-      child: SizedBox(
-        width: 400,
-        height: 600,
-        child: Card(
-          color: const Color.fromARGB(164, 48, 116, 148),
-          child: Builder(
-            builder: (BuildContext context) {
-              return Form(
-                key: _formKey,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const Text(
-                        "تحقق من تطابق الظروف",
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        cursorColor: Colors.lightBlue,
-                        controller: tempController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelStyle: const TextStyle(
-                            color: Color.fromARGB(255, 0, 73, 116),
+    return Padding(
+      padding: const EdgeInsets.only(top: 15),
+      child: Center(
+        child: SizedBox(
+          width: 400,
+          height: 700,
+          child: Card(
+            color: const Color.fromARGB(164, 48, 116, 148),
+            child: Builder(
+              builder: (BuildContext context) {
+                return SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const Text(
+                            "تحقق من تطابق الظروف",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 20, color: Colors.white),
                           ),
-                          fillColor: const Color.fromARGB(122, 110, 200, 255),
-                          filled: true,
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.lightBlue),
-                          ),
-                          focusColor: Colors.lightBlue,
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.lightBlue, width: 2),
-                          ),
-                          hoverColor: Colors.lightBlue,
-                          labelText: 'درجة الحرارة',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: const BorderSide(
-                                width: 10, color: Colors.lightBlue),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'الرجاء إدخال قيمة';
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        cursorColor: Colors.lightBlue,
-                        controller: cloudCoverageController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelStyle: const TextStyle(
-                              color: Color.fromARGB(255, 0, 73, 116)),
-                          fillColor: const Color.fromARGB(122, 110, 200, 255),
-                          filled: true,
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.lightBlue),
-                          ),
-                          focusColor: Colors.lightBlue,
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.lightBlue, width: 2),
-                          ),
-                          hoverColor: Colors.lightBlue,
-                          labelText: '%تغطية السحب',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: const BorderSide(
-                                width: 10, color: Colors.lightBlue),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'الرجاء إدخال قيمة';
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        cursorColor: Colors.lightBlue,
-                        controller: humidityController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelStyle: const TextStyle(
-                              color: Color.fromARGB(255, 0, 73, 116)),
-                          fillColor: const Color.fromARGB(122, 110, 200, 255),
-                          filled: true,
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.lightBlue),
-                          ),
-                          focusColor: Colors.lightBlue,
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.lightBlue, width: 2),
-                          ),
-                          hoverColor: Colors.lightBlue,
-                          labelText: 'الرطوبة',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: const BorderSide(
-                                width: 10, color: Colors.lightBlue),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'الرجاء إدخال قيمة';
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        cursorColor: Colors.lightBlue,
-                        controller: lastRainedController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelStyle: const TextStyle(
-                              color: Color.fromARGB(255, 0, 73, 116)),
-                          fillColor: const Color.fromARGB(122, 110, 200, 255),
-                          filled: true,
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.lightBlue),
-                          ),
-                          focusColor: Colors.lightBlue,
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.lightBlue, width: 2),
-                          ),
-                          hoverColor: Colors.lightBlue,
-                          labelText: 'الأيام منذ آخر هطول للأمطار',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: const BorderSide(
-                                width: 10, color: Colors.lightBlue),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'الرجاء إدخال قيمة';
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        cursorColor: Colors.lightBlue,
-                        controller: precipitationController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelStyle: const TextStyle(
-                              color: Color.fromARGB(255, 0, 73, 116)),
-                          fillColor: const Color.fromARGB(122, 110, 200, 255),
-                          filled: true,
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.lightBlue),
-                          ),
-                          focusColor: Colors.lightBlue,
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.lightBlue, width: 2),
-                          ),
-                          hoverColor: Colors.lightBlue,
-                          labelText: 'كميه الهطول',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: const BorderSide(
-                                width: 10, color: Colors.lightBlue),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'الرجاء إدخال قيمة';
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        cursorColor: Colors.lightBlue,
-                        controller: avgRainfallDaysController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelStyle: const TextStyle(
-                              color: Color.fromARGB(255, 0, 73, 116)),
-                          fillColor: const Color.fromARGB(122, 110, 200, 255),
-                          filled: true,
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.lightBlue),
-                          ),
-                          focusColor: Colors.lightBlue,
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.lightBlue, width: 2),
-                          ),
-                          hoverColor: Colors.lightBlue,
-                          labelText: '"متوسط أيام هطول الأمطار في السنة',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: const BorderSide(
-                                width: 10, color: Colors.lightBlue),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'الرجاء إدخال قيمة';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            if (_formKey.currentState!.validate()) {
-                              int counter = 0;
-
-                              String applicability =
-                                  "قابلة للأمطار الاصطناعية. يمكن إنشاء الأمطار الاصطناعية من خلال تحفيز السحب.";
-                              // Access the entered values using text controllers
-                              double temperature =
-                                  double.parse(tempController.text);
-                              double cloudCoverage =
-                                  double.parse(cloudCoverageController.text);
-                              double humidity =
-                                  double.parse(humidityController.text);
-                              double lastRained =
-                                  double.parse(lastRainedController.text);
-                              double precipitation =
-                                  double.parse(precipitationController.text);
-                              double avgRainfallDays =
-                                  double.parse(avgRainfallDaysController.text);
-                              if (temperature >
-                                  WeatherUtility.HIGH_TEMPERATURE_THRESHOLD) {
-                                counter++;
-                              }
-
-                              if (cloudCoverage <=
-                                  WeatherUtility.LOW_CLOUD_THRESHOLD) {
-                                counter++;
-                                applicability =
-                                    "لا يوجد ما يكفي من السحب لتحفيز السحب، يُقترح استخدام السحب الاصطناعية\n\nثلاثة شروط تحتاج إلى توفرها لتشكيل سحابة بشرية:\n\n1. يجب أن يكون الهواء قريبًا من التشبع ببخار الماء.\n\n2. يجب أن يتم تبريد الهواء إلى درجة الندى بالنسبة للماء (أو الجليد) لتكثيف (أو تحول) جزء من بخار الماء.\n\n3. يجب أن يحتوي الهواء على نوى تكثيف، وهي جسيمات صلبة صغيرة، حيث يبدأ التكثيف/التحول..";
-                              }
-
-                              if (humidity <=
-                                  WeatherUtility.LOW_HUMIDITY_THRESHOLD) {
-                                counter++;
-                              }
-
-                              if (lastRained >=
-                                  WeatherUtility
-                                      .DAYS_SINCE_RAINFALL_THRESHOLD) {
-                                counter++;
-                              }
-
-                              if (avgRainfallDays <=
-                                  WeatherUtility
-                                      .LOW_RAINFALL_DAYSAVG_THRESHOLD) {
-                                counter++;
-                              }
-
-                              if (precipitation <=
-                                  WeatherUtility.LOW_PRECIPITATION_THRESHOLD) {
-                                counter++;
-                              }
-
-                              if (counter >= 3) {
-                                showModalBottomSheet<void>(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white70,
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      height: 500,
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            Text(
-                                              'تحتاج إلى أمطار اصطناعية, $applicability',
-                                              style: const TextStyle(
-                                                  fontSize: 20.0),
-                                            ),
-                                            ElevatedButton(
-                                              child: const Text('إغلاق'),
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              } else {
-                                showModalBottomSheet<void>(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white70,
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      height: 500,
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            const Text(
-                                              'الشروط المقدمة لا تتطلب الأمطار الاصطناعية.',
-                                              style: TextStyle(fontSize: 20.0),
-                                            ),
-                                            ElevatedButton(
-                                              child: const Text('إغلاق'),
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              }
-                            }
-                          });
-                        },
-                        style: const ButtonStyle(
-                          shape: MaterialStatePropertyAll(
-                            BeveledRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(5),
+                          TextFormField(
+                            cursorColor: Colors.lightBlue,
+                            controller: tempController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelStyle: const TextStyle(
+                                color: Color.fromARGB(255, 0, 73, 116),
+                              ),
+                              fillColor:
+                                  const Color.fromARGB(122, 110, 200, 255),
+                              filled: true,
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.lightBlue),
+                              ),
+                              focusColor: Colors.lightBlue,
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.lightBlue, width: 2),
+                              ),
+                              hoverColor: Colors.lightBlue,
+                              labelText: 'درجة الحرارة',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: const BorderSide(
+                                    width: 10, color: Colors.lightBlue),
                               ),
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'الرجاء إدخال قيمة';
+                              }
+                              return null;
+                            },
                           ),
-                          backgroundColor: MaterialStatePropertyAll(
-                            Color.fromARGB(255, 0, 102, 255),
+                          const SizedBox(height: 15),
+                          TextFormField(
+                            cursorColor: Colors.lightBlue,
+                            controller: cloudCoverageController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelStyle: const TextStyle(
+                                  color: Color.fromARGB(255, 0, 73, 116)),
+                              fillColor:
+                                  const Color.fromARGB(122, 110, 200, 255),
+                              filled: true,
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.lightBlue),
+                              ),
+                              focusColor: Colors.lightBlue,
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.lightBlue, width: 2),
+                              ),
+                              hoverColor: Colors.lightBlue,
+                              labelText: '%تغطية السحب',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: const BorderSide(
+                                    width: 10, color: Colors.lightBlue),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'الرجاء إدخال قيمة';
+                              }
+                              return null;
+                            },
                           ),
-                        ),
-                        child: const Text(
-                          'تحقق',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                          const SizedBox(height: 15),
+                          TextFormField(
+                            cursorColor: Colors.lightBlue,
+                            controller: humidityController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelStyle: const TextStyle(
+                                  color: Color.fromARGB(255, 0, 73, 116)),
+                              fillColor:
+                                  const Color.fromARGB(122, 110, 200, 255),
+                              filled: true,
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.lightBlue),
+                              ),
+                              focusColor: Colors.lightBlue,
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.lightBlue, width: 2),
+                              ),
+                              hoverColor: Colors.lightBlue,
+                              labelText: 'الرطوبة',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: const BorderSide(
+                                    width: 10, color: Colors.lightBlue),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'الرجاء إدخال قيمة';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 15),
+                          TextFormField(
+                            cursorColor: Colors.lightBlue,
+                            controller: lastRainedController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelStyle: const TextStyle(
+                                  color: Color.fromARGB(255, 0, 73, 116)),
+                              fillColor:
+                                  const Color.fromARGB(122, 110, 200, 255),
+                              filled: true,
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.lightBlue),
+                              ),
+                              focusColor: Colors.lightBlue,
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.lightBlue, width: 2),
+                              ),
+                              hoverColor: Colors.lightBlue,
+                              labelText: 'الأيام منذ آخر هطول للأمطار',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: const BorderSide(
+                                    width: 10, color: Colors.lightBlue),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'الرجاء إدخال قيمة';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 15),
+                          TextFormField(
+                            cursorColor: Colors.lightBlue,
+                            controller: precipitationController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelStyle: const TextStyle(
+                                  color: Color.fromARGB(255, 0, 73, 116)),
+                              fillColor:
+                                  const Color.fromARGB(122, 110, 200, 255),
+                              filled: true,
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.lightBlue),
+                              ),
+                              focusColor: Colors.lightBlue,
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.lightBlue, width: 2),
+                              ),
+                              hoverColor: Colors.lightBlue,
+                              labelText: 'كميه الهطول',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: const BorderSide(
+                                    width: 10, color: Colors.lightBlue),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'الرجاء إدخال قيمة';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 15),
+                          TextFormField(
+                            cursorColor: Colors.lightBlue,
+                            controller: avgRainfallDaysController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelStyle: const TextStyle(
+                                  color: Color.fromARGB(255, 0, 73, 116)),
+                              fillColor:
+                                  const Color.fromARGB(122, 110, 200, 255),
+                              filled: true,
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.lightBlue),
+                              ),
+                              focusColor: Colors.lightBlue,
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.lightBlue, width: 2),
+                              ),
+                              hoverColor: Colors.lightBlue,
+                              labelText: '"متوسط أيام هطول الأمطار في السنة',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: const BorderSide(
+                                    width: 10, color: Colors.lightBlue),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'الرجاء إدخال قيمة';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                if (_formKey.currentState!.validate()) {
+                                  int counter = 0;
+
+                                  String applicability =
+                                      "قابلة للأمطار الاصطناعية. يمكن إنشاء الأمطار الاصطناعية من خلال تحفيز السحب.";
+                                  // Access the entered values using text controllers
+                                  double temperature =
+                                      double.parse(tempController.text);
+                                  double cloudCoverage = double.parse(
+                                      cloudCoverageController.text);
+                                  double humidity =
+                                      double.parse(humidityController.text);
+                                  double lastRained =
+                                      double.parse(lastRainedController.text);
+                                  double precipitation = double.parse(
+                                      precipitationController.text);
+                                  double avgRainfallDays = double.parse(
+                                      avgRainfallDaysController.text);
+                                  if (temperature >
+                                      WeatherUtility
+                                          .HIGH_TEMPERATURE_THRESHOLD) {
+                                    counter++;
+                                  }
+
+                                  if (cloudCoverage <=
+                                      WeatherUtility.LOW_CLOUD_THRESHOLD) {
+                                    counter++;
+                                    applicability =
+                                        "لا يوجد ما يكفي من السحب لتحفيز السحب، يُقترح استخدام السحب الاصطناعية\n\nثلاثة شروط تحتاج إلى توفرها لتشكيل سحابة بشرية:\n\n1. يجب أن يكون الهواء قريبًا من التشبع ببخار الماء.\n\n2. يجب أن يتم تبريد الهواء إلى درجة الندى بالنسبة للماء (أو الجليد) لتكثيف (أو تحول) جزء من بخار الماء.\n\n3. يجب أن يحتوي الهواء على نوى تكثيف، وهي جسيمات صلبة صغيرة، حيث يبدأ التكثيف/التحول..";
+                                  }
+
+                                  if (humidity <=
+                                      WeatherUtility.LOW_HUMIDITY_THRESHOLD) {
+                                    counter++;
+                                  }
+
+                                  if (lastRained >=
+                                      WeatherUtility
+                                          .DAYS_SINCE_RAINFALL_THRESHOLD) {
+                                    counter++;
+                                  }
+
+                                  if (avgRainfallDays <=
+                                      WeatherUtility
+                                          .LOW_RAINFALL_DAYSAVG_THRESHOLD) {
+                                    counter++;
+                                  }
+
+                                  if (precipitation <=
+                                      WeatherUtility
+                                          .LOW_PRECIPITATION_THRESHOLD) {
+                                    counter++;
+                                  }
+
+                                  if (counter >= 3) {
+                                    showModalBottomSheet<void>(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white70,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          height: 500,
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Text(
+                                                  'تحتاج إلى أمطار اصطناعية, $applicability',
+                                                  style: const TextStyle(
+                                                      fontSize: 20.0),
+                                                ),
+                                                ElevatedButton(
+                                                  child: const Text('إغلاق'),
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    showModalBottomSheet<void>(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white70,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          height: 500,
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                const Text(
+                                                  'الشروط المقدمة لا تتطلب الأمطار الاصطناعية.',
+                                                  style:
+                                                      TextStyle(fontSize: 20.0),
+                                                ),
+                                                ElevatedButton(
+                                                  child: const Text('إغلاق'),
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }
+                                }
+                              });
+                            },
+                            style: const ButtonStyle(
+                              shape: MaterialStatePropertyAll(
+                                BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(5),
+                                  ),
+                                ),
+                              ),
+                              backgroundColor: MaterialStatePropertyAll(
+                                Color.fromARGB(255, 0, 102, 255),
+                              ),
+                            ),
+                            child: const Text(
+                              'تحقق',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),

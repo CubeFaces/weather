@@ -238,7 +238,6 @@ class _MyAppState extends State<MyApp> {
                         for (int i = 0; i < conditionsList.length; i++) {
                           if (conditionsList[i] == "Cloud Coverage Low%") {
                             isApplicable = false;
-                            print(conditionsList[i]);
                           }
                         }
                       }
@@ -258,28 +257,31 @@ class _MyAppState extends State<MyApp> {
                                 style: TextStyle(fontSize: 20.0),
                               ),
                               const SizedBox(height: 10),
-
-                              // Check conditions in the outer and inner lists
+                              // Iterate over each sublist in metConditionsList
                               for (List<String> conditionsList
                                   in metConditionsList)
-                                for (int i = 0; i < conditionsList.length; i++)
-                                  Column(
-                                    children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Iterate over items in the current sublist
+                                    for (int i = 0;
+                                        i < conditionsList.length;
+                                        i++)
                                       ListTile(
                                         leading: Text('${i + 1}.'),
                                         title: Text(conditionMappingAR[
                                                 conditionsList[i]]
                                             .toString()),
-                                      )
-                                    ],
-                                  ),
+                                      ),
+                                  ],
+                                ),
 
                               const SizedBox(height: 10),
                               ElevatedButton(
                                 child: const Text('إغلاق'),
                                 onPressed: () {
                                   // Do something with isApplicable
-                                  print('Is Applicable: $isApplicable');
+
                                   Navigator.pop(context);
                                 },
                               ),
@@ -1066,8 +1068,6 @@ class _MyAppState extends State<MyApp> {
       // Return the values as a list
       return [city, restOfSentence];
     } else {
-      print("Invalid sentence format");
-
       // If the specified sentence is not found, set the default values
       String city = "";
       String restOfSentence = "?";
@@ -1245,13 +1245,9 @@ class _MyAppState extends State<MyApp> {
                         setState(() {
                           weatherResultsUpdated =
                               updateAndSortWeatherResults(weatherResults);
-                          print(weatherResults);
-                          print(weatherResultsUpdated);
                           metConditionsList = extractAndRemoveWeatherConditions(
                               weatherResultsUpdated);
 
-                          print(weatherResults);
-                          print(weatherResultsUpdated);
                           applicability = extractAndRemoveApplicability(
                               weatherResultsUpdated);
                         });

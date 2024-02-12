@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:translator/translator.dart';
 
 Future<void> main() async {
-  runApp( const MyApp());
+  runApp(const MyApp());
 }
 
 String formatDate(DateTime date) {
@@ -583,7 +583,10 @@ class _MyAppState extends State<MyApp> {
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               hintText: '20',
-                              helperText: '.أدخل درجة الحرارة في نطاق من 0 إلى 60 سلسيوس',helperStyle: const TextStyle(color: Colors.white,fontSize: 14),
+                              helperText:
+                                  '.أدخل درجة الحرارة في نطاق من 0 إلى 60 سلسيوس',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
                               alignLabelWithHint: true,
                               labelStyle: const TextStyle(
                                 color: Color.fromARGB(255, 0, 73, 116),
@@ -635,6 +638,10 @@ class _MyAppState extends State<MyApp> {
                               ),
                               hoverColor: Colors.lightBlue,
                               labelText: '%تغطية السحب',
+                              hintText: '80',
+                              helperText: 'أدخل نسبة تغطية السحب',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                                 borderSide: const BorderSide(
@@ -669,6 +676,10 @@ class _MyAppState extends State<MyApp> {
                               ),
                               hoverColor: Colors.lightBlue,
                               labelText: 'الرطوبة',
+                              hintText: '80',
+                              helperText: 'أدخل نسبةالرطوبة',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                                 borderSide: const BorderSide(
@@ -1205,18 +1216,18 @@ class _MyAppState extends State<MyApp> {
                           duration: const Duration(milliseconds: 1000),
                           curve: Curves.easeInOut,
                         );
-    
+
                         singleCityPressed = false;
                       });
                       weatherResults = [];
                       selectedCities = [];
                       weatherResultsUpdated = [];
                       applicability = [];
-    
+
                       for (var menu in dropdownMenus) {
                         selectedCities.add(menu.currentCity);
                       }
-    
+
                       for (var city in selectedCities) {
                         String result =
                             await weatherUtility.needsArtificialRain(
@@ -1233,7 +1244,7 @@ class _MyAppState extends State<MyApp> {
                             updateAndSortWeatherResults(weatherResults);
                         metConditionsList = extractAndRemoveWeatherConditions(
                             weatherResultsUpdated);
-    
+
                         applicability = extractAndRemoveApplicability(
                             weatherResultsUpdated);
                       });

@@ -1,18 +1,11 @@
 import 'dart:ui';
 import 'package:artificial_rains/weather_api.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_translate/flutter_translate.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:translator/translator.dart';
 
 Future<void> main() async {
-  var delegate = await LocalizationDelegate.create(
-    fallbackLocale: 'en_US',
-    supportedLocales: ['ar', 'en_US'],
-  );
-
-  runApp(LocalizedApp(delegate, const MyApp()));
+  runApp( const MyApp());
 }
 
 String formatDate(DateTime date) {
@@ -60,7 +53,8 @@ Map<String, String> cityMappingAR = {
 };
 Map<String, String> appMappingAR = {
   'is Able for Artificial Rains': 'قادرة على الأمطار الاصطناعية',
-  'is Not Able for Artificial Rains': 'غير قادرة على الأمطار الاصطناعية',
+  'is Not Able for Artificial Rains':
+      'السحب غير كافية يجب عليك صناعة السحب و لكن سيتم صناعتها بصعوبة',
 };
 Map<String, String> conditionMappingAR = {
   'High Temperature': 'درجة حرارة عالية',
@@ -559,28 +553,6 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Future<List<String>> translateConditions(List<String> conditions) async {
-    List<String> translatedConditions = [];
-    for (String condition in conditions) {
-      Translation translation =
-          await translator.translate(condition, from: 'en', to: 'ar');
-      translatedConditions.add(translation.text);
-    }
-    return translatedConditions;
-  }
-
-  Future<String> translateTitle(String title) async {
-    Translation translation =
-        await translator.translate(title, from: 'en', to: 'ar');
-    return translation.text;
-  }
-
-  Future<String> translateCity(String title) async {
-    Translation translation =
-        await translator.translate(title, from: 'ar', to: 'en');
-    return translation.text;
-  }
-
   Widget buildConditionsPage() {
     return Padding(
       padding: const EdgeInsets.only(top: 15),
@@ -610,6 +582,9 @@ class _MyAppState extends State<MyApp> {
                             controller: tempController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
+                              hintText: '20',
+                              helperText: '20000000000000',
+                              alignLabelWithHint: true,
                               labelStyle: const TextStyle(
                                 color: Color.fromARGB(255, 0, 73, 116),
                               ),
@@ -967,6 +942,28 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  Future<List<String>> translateConditions(List<String> conditions) async {
+    List<String> translatedConditions = [];
+    for (String condition in conditions) {
+      Translation translation =
+          await translator.translate(condition, from: 'en', to: 'ar');
+      translatedConditions.add(translation.text);
+    }
+    return translatedConditions;
+  }
+
+  Future<String> translateTitle(String title) async {
+    Translation translation =
+        await translator.translate(title, from: 'en', to: 'ar');
+    return translation.text;
+  }
+
+  Future<String> translateCity(String title) async {
+    Translation translation =
+        await translator.translate(title, from: 'ar', to: 'en');
+    return translation.text;
+  }
+
   int currentPageIndex = 0;
   bool singleCityPressed = false;
   bool isApplicable = true;
@@ -1103,196 +1100,184 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    var localizationDelegate = LocalizedApp.of(context).delegate;
-    return LocalizationProvider(
-      state: LocalizationProvider.of(context).state,
-      child: MaterialApp(
-        localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-          localizationDelegate
-        ],
-        supportedLocales: localizationDelegate.supportedLocales,
-        locale: localizationDelegate.currentLocale,
-        home: Scaffold(
-          extendBodyBehindAppBar: true,
-          extendBody: true,
-          appBar: AppBar(
-            title: const Center(
-              child: Text(
-                "الأمطار الصناعية",
-              ),
+    return MaterialApp(
+      home: Scaffold(
+        extendBodyBehindAppBar: true,
+        extendBody: true,
+        appBar: AppBar(
+          title: const Center(
+            child: Text(
+              "الأمطار الصناعية",
             ),
-            backgroundColor: const Color.fromARGB(148, 3, 168, 244),
-            foregroundColor: Colors.white,
           ),
-          bottomNavigationBar: NavigationBar(
-            backgroundColor: const Color.fromARGB(200, 255, 255, 255),
-            onDestinationSelected: (int index) {
-              pageController.animateToPage(
-                index,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-              );
-            },
-            indicatorColor: Colors.lightBlue,
-            selectedIndex: currentPageIndex,
-            destinations: const <Widget>[
-              NavigationDestination(
-                selectedIcon: Icon(Icons.add_circle),
-                icon: Icon(Icons.add_circle_outline_outlined),
-                label: 'اختر',
-              ),
-              NavigationDestination(
-                selectedIcon: Icon(Icons.check_circle_outline_outlined),
-                icon: Icon(Icons.check_circle),
-                label: 'التطبيقية',
-              ),
-              NavigationDestination(
-                selectedIcon: Icon(Icons.format_list_numbered_rounded),
-                icon: Icon(Icons.view_list_rounded),
-                label: 'التصنيف',
-              ),
-              NavigationDestination(
-                selectedIcon: Icon(Icons.location_city_rounded),
-                icon: Icon(Icons.location_city_sharp),
-                label: 'اختر',
-              ),
-              NavigationDestination(
-                selectedIcon: Icon(Icons.cloud_circle_outlined),
-                icon: Icon(Icons.cloud_circle),
-                label: 'الشروط',
-              ),
-            ],
-          ),
-          body: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage(
-                  "https://images.unsplash.com/photo-1534088568595-a066f410bcda?q=80&w=1651&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                ),
-              ),
+          backgroundColor: const Color.fromARGB(148, 3, 168, 244),
+          foregroundColor: Colors.white,
+        ),
+        bottomNavigationBar: NavigationBar(
+          backgroundColor: const Color.fromARGB(200, 255, 255, 255),
+          onDestinationSelected: (int index) {
+            pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          },
+          indicatorColor: Colors.lightBlue,
+          selectedIndex: currentPageIndex,
+          destinations: const <Widget>[
+            NavigationDestination(
+              selectedIcon: Icon(Icons.add_circle),
+              icon: Icon(Icons.add_circle_outline_outlined),
+              label: 'اختر',
             ),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 12 / 4, sigmaY: 12 / 4),
-              child: PageView.builder(
-                controller: pageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    currentPageIndex = index;
-                  });
-                },
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return [
-                    buildChoosePage(),
-                    buildApplicabilityPage(),
-                    buildRankingPage(),
-                    buildSelectPage(),
-                    buildConditionsPage(),
-                  ][index];
-                },
+            NavigationDestination(
+              selectedIcon: Icon(Icons.check_circle_outline_outlined),
+              icon: Icon(Icons.check_circle),
+              label: 'التطبيقية',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.format_list_numbered_rounded),
+              icon: Icon(Icons.view_list_rounded),
+              label: 'التصنيف',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.location_city_rounded),
+              icon: Icon(Icons.location_city_sharp),
+              label: 'اختر',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.cloud_circle_outlined),
+              icon: Icon(Icons.cloud_circle),
+              label: 'الشروط',
+            ),
+          ],
+        ),
+        body: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: NetworkImage(
+                "https://images.unsplash.com/photo-1534088568595-a066f410bcda?q=80&w=1651&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
               ),
             ),
           ),
-          floatingActionButton: Visibility(
-            visible: currentPageIndex == 0 ? true : false,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 30.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 100,
-                    child: FloatingActionButton(
-                      backgroundColor: Colors.lightBlueAccent,
-                      onPressed: () async {
-                        setState(() {
-                          int nextPageIndex = (currentPageIndex + 2) % 5;
-                          pageController.animateToPage(
-                            nextPageIndex,
-                            duration: const Duration(milliseconds: 1000),
-                            curve: Curves.easeInOut,
-                          );
-
-                          singleCityPressed = false;
-                        });
-                        weatherResults = [];
-                        selectedCities = [];
-                        weatherResultsUpdated = [];
-                        applicability = [];
-
-                        for (var menu in dropdownMenus) {
-                          selectedCities.add(menu.currentCity);
-                        }
-
-                        for (var city in selectedCities) {
-                          String result =
-                              await weatherUtility.needsArtificialRain(
-                            city,
-                            MyApp.startingDate,
-                            MyApp.endingDate,
-                          );
-                          setState(() {
-                            weatherResults.add(result);
-                          });
-                        }
-                        setState(() {
-                          weatherResultsUpdated =
-                              updateAndSortWeatherResults(weatherResults);
-                          metConditionsList = extractAndRemoveWeatherConditions(
-                              weatherResultsUpdated);
-
-                          applicability = extractAndRemoveApplicability(
-                              weatherResultsUpdated);
-                        });
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'قارن',
-                          textAlign: TextAlign.center,
-                          softWrap: false,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 120,
-                    child: FloatingActionButton(
-                      backgroundColor: Colors.lightBlueAccent,
-                      onPressed: () {
-                        setState(
-                          () {
-                            dropdownMenus.add(
-                              DropdownCityMenu(
-                                key: UniqueKey(),
-                              ),
-                            );
-                          },
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12 / 4, sigmaY: 12 / 4),
+            child: PageView.builder(
+              controller: pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  currentPageIndex = index;
+                });
+              },
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return [
+                  buildChoosePage(),
+                  buildApplicabilityPage(),
+                  buildRankingPage(),
+                  buildSelectPage(),
+                  buildConditionsPage(),
+                ][index];
+              },
+            ),
+          ),
+        ),
+        floatingActionButton: Visibility(
+          visible: currentPageIndex == 0 ? true : false,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 30.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.lightBlueAccent,
+                    onPressed: () async {
+                      setState(() {
+                        int nextPageIndex = (currentPageIndex + 2) % 5;
+                        pageController.animateToPage(
+                          nextPageIndex,
+                          duration: const Duration(milliseconds: 1000),
+                          curve: Curves.easeInOut,
                         );
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.only(left: 15.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "أضف مدينة",
-                              textAlign: TextAlign.center,
-                            ),
-                            Icon(Icons.add)
-                          ],
-                        ),
+    
+                        singleCityPressed = false;
+                      });
+                      weatherResults = [];
+                      selectedCities = [];
+                      weatherResultsUpdated = [];
+                      applicability = [];
+    
+                      for (var menu in dropdownMenus) {
+                        selectedCities.add(menu.currentCity);
+                      }
+    
+                      for (var city in selectedCities) {
+                        String result =
+                            await weatherUtility.needsArtificialRain(
+                          city,
+                          MyApp.startingDate,
+                          MyApp.endingDate,
+                        );
+                        setState(() {
+                          weatherResults.add(result);
+                        });
+                      }
+                      setState(() {
+                        weatherResultsUpdated =
+                            updateAndSortWeatherResults(weatherResults);
+                        metConditionsList = extractAndRemoveWeatherConditions(
+                            weatherResultsUpdated);
+    
+                        applicability = extractAndRemoveApplicability(
+                            weatherResultsUpdated);
+                      });
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'قارن',
+                        textAlign: TextAlign.center,
+                        softWrap: false,
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+                SizedBox(
+                  width: 120,
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.lightBlueAccent,
+                    onPressed: () {
+                      setState(
+                        () {
+                          dropdownMenus.add(
+                            DropdownCityMenu(
+                              key: UniqueKey(),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 15.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            "أضف مدينة",
+                            textAlign: TextAlign.center,
+                          ),
+                          Icon(Icons.add)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

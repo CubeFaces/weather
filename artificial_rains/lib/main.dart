@@ -198,7 +198,6 @@ class _MyAppState extends State<MyApp> {
           );
   }
 
-  final translator = GoogleTranslator();
   Widget buildRankingPage() {
     return weatherResultsUpdated.isNotEmpty
         ? ListView.builder(
@@ -500,28 +499,28 @@ class _MyAppState extends State<MyApp> {
               switch (condition) {
                 case "High Temperature":
                   conditionsStatements.add(
-                      "يُنصَح بأن يوفِّرَ الفلاحون ظلًا كافيًا للمحاصيل، ويزيدوا من تكرار الري، ويختاروا أصناف المحاصيل التي تتحمل الحرارة.");
+                      "يُنصَح بأن يوفِّرَ المزارعون ظلًا كافيًا للمحاصيل، ويزيدوا من تكرار الري، ويختاروا أصناف المحاصيل التي تتحمل الحرارة.");
                   break;
                 case "Cloud Coverage Low%":
                   conditionsStatements.add(
-                      "عدم وجود السحب يجعل هذه المدينة غير مناسبة للأمطار الاصطناعية. يُنصَح بمراقبة رطوبة التربة عن كثب من قبل الفلاحين.");
+                      "عدم وجود السحب يجعل هذه المدينة غير مناسبة للأمطار الاصطناعية. يُنصَح بمراقبة رطوبة التربة عن كثب من قبل المزارعين.");
                   isApplicable = false;
                   break;
                 case "Low Humidity":
                   conditionsStatements.add(
-                      "يُنصَح بأن يزيد الفلاحون من الري ويطبقون إجراءات الحفاظ على المياه للحفاظ على رطوبة التربة.");
+                      "يُنصَح بأن يزيد المزارعون من الري ويطبقون إجراءات الحفاظ على المياه للحفاظ على رطوبة التربة.");
                   break;
                 case "No Rainfall Since":
                   conditionsStatements.add(
-                      "يُنصَح بأن يراقب الفلاحون احتياجات الماء للمحاصيل عن كثب، ويطبقون الري الإضافي، ويأخذون في اعتبارهم أصناف المحاصيل التي تتحمل الجفاف.");
+                      "يُنصَح بأن يراقب المزارعون احتياجات الماء للمحاصيل عن كثب، ويطبقون الري الإضافي، ويأخذون في اعتبارهم أصناف المحاصيل التي تتحمل الجفاف.");
                   break;
                 case "Low Average Rainfall Days":
                   conditionsStatements.add(
-                      "يُنصَح بأن يخطط الفلاحون لاستخدام الماء بكفاءة وتطبيق تقنيات جمع مياه الأمطار.");
+                      "يُنصَح بأن يخطط المزارعون لاستخدام الماء بكفاءة وتطبيق تقنيات جمع مياه الأمطار.");
                   break;
                 case "Low Precipitation":
                   conditionsStatements.add(
-                      "يُنصَح بأن يطبق الفلاحون تقنيات توفير المياه، مثل الري بالتنقيط، ويتبنون أصناف المحاصيل المقاومة للجفاف.");
+                      "يُنصَح بأن يطبق المزارعون تقنيات توفير المياه، مثل الري بالتنقيط، ويتبنون أصناف المحاصيل المقاومة للجفاف.");
                   break;
                 default:
                   conditionsStatements.add(
@@ -953,6 +952,263 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  Widget buildCheckPage() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 15),
+      child: Center(
+        child: SizedBox(
+          width: 400,
+          height: 700,
+          child: Card(
+            color: const Color.fromARGB(164, 48, 116, 148),
+            child: Builder(
+              builder: (BuildContext context) {
+                return SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const Text(
+                            "check Clouds and Humidity",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                          ),
+                          TextFormField(
+                            cursorColor: Colors.lightBlue,
+                            controller: cloudCoverageController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelStyle: const TextStyle(
+                                  color: Color.fromARGB(255, 0, 73, 116)),
+                              fillColor:
+                                  const Color.fromARGB(122, 110, 200, 255),
+                              filled: true,
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.lightBlue),
+                              ),
+                              focusColor: Colors.lightBlue,
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.lightBlue, width: 2),
+                              ),
+                              hoverColor: Colors.lightBlue,
+                              labelText: '%تغطية السحب',
+                              hintText: '80',
+                              helperText: 'أدخل نسبة تغطية السحب',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: const BorderSide(
+                                    width: 10, color: Colors.lightBlue),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'الرجاء إدخال قيمة';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 15),
+                          TextFormField(
+                            cursorColor: Colors.lightBlue,
+                            controller: humidityController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelStyle: const TextStyle(
+                                  color: Color.fromARGB(255, 0, 73, 116)),
+                              fillColor:
+                                  const Color.fromARGB(122, 110, 200, 255),
+                              filled: true,
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.lightBlue),
+                              ),
+                              focusColor: Colors.lightBlue,
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.lightBlue, width: 2),
+                              ),
+                              hoverColor: Colors.lightBlue,
+                              labelText: 'الرطوبة',
+                              hintText: '80',
+                              helperText: 'أدخل نسبةالرطوبة',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: const BorderSide(
+                                    width: 10, color: Colors.lightBlue),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'الرجاء إدخال قيمة';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                if (_formKey.currentState!.validate()) {
+                                  int counter = 0;
+
+                                  String applicability =
+                                      "قابلة للأمطار الاصطناعية. يمكن إنشاء الأمطار الاصطناعية من خلال تحفيز السحب.";
+                                  // Access the entered values using text controllers
+                                  double temperature =
+                                      double.parse(tempController.text);
+                                  double cloudCoverage = double.parse(
+                                      cloudCoverageController.text);
+                                  double humidity =
+                                      double.parse(humidityController.text);
+                                  double lastRained =
+                                      double.parse(lastRainedController.text);
+                                  double precipitation = double.parse(
+                                      precipitationController.text);
+                                  double avgRainfallDays = double.parse(
+                                      avgRainfallDaysController.text);
+                                  if (temperature >
+                                      WeatherUtility
+                                          .HIGH_TEMPERATURE_THRESHOLD) {
+                                    counter++;
+                                  }
+
+                                  if (cloudCoverage <=
+                                      WeatherUtility.LOW_CLOUD_THRESHOLD) {
+                                    counter++;
+                                    applicability =
+                                        "لا يوجد ما يكفي من السحب لتحفيز السحب، يُقترح استخدام السحب الاصطناعية\n\nثلاثة شروط تحتاج إلى توفرها لتشكيل سحابة بشرية:\n\n1. يجب أن يكون الهواء قريبًا من التشبع ببخار الماء.\n\n2. يجب أن يتم تبريد الهواء إلى درجة الندى بالنسبة للماء (أو الجليد) لتكثيف (أو تحول) جزء من بخار الماء.\n\n3. يجب أن يحتوي الهواء على نوى تكثيف، وهي جسيمات صلبة صغيرة، حيث يبدأ التكثيف/التحول..";
+                                  }
+
+                                  if (humidity <=
+                                      WeatherUtility.LOW_HUMIDITY_THRESHOLD) {
+                                    counter++;
+                                  }
+
+                                  if (lastRained >=
+                                      WeatherUtility
+                                          .DAYS_SINCE_RAINFALL_THRESHOLD) {
+                                    counter++;
+                                  }
+
+                                  if (avgRainfallDays <=
+                                      WeatherUtility
+                                          .LOW_RAINFALL_DAYSAVG_THRESHOLD) {
+                                    counter++;
+                                  }
+
+                                  if (precipitation <=
+                                      WeatherUtility
+                                          .LOW_PRECIPITATION_THRESHOLD) {
+                                    counter++;
+                                  }
+
+                                  if (counter >= 3) {
+                                    showModalBottomSheet<void>(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white70,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          height: 500,
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Text(
+                                                  'تحتاج إلى أمطار اصطناعية, $applicability',
+                                                  style: const TextStyle(
+                                                      fontSize: 20.0),
+                                                ),
+                                                ElevatedButton(
+                                                  child: const Text('إغلاق'),
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    showModalBottomSheet<void>(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white70,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          height: 500,
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                const Text(
+                                                  'الشروط المقدمة لا تتطلب الأمطار الاصطناعية.',
+                                                  style:
+                                                      TextStyle(fontSize: 20.0),
+                                                ),
+                                                ElevatedButton(
+                                                  child: const Text('إغلاق'),
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }
+                                }
+                              });
+                            },
+                            style: const ButtonStyle(
+                              shape: MaterialStatePropertyAll(
+                                BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(5),
+                                  ),
+                                ),
+                              ),
+                              backgroundColor: MaterialStatePropertyAll(
+                                Color.fromARGB(255, 0, 102, 255),
+                              ),
+                            ),
+                            child: const Text(
+                              'تحقق',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<List<String>> translateConditions(List<String> conditions) async {
     List<String> translatedConditions = [];
     for (String condition in conditions) {
@@ -975,6 +1231,7 @@ class _MyAppState extends State<MyApp> {
     return translation.text;
   }
 
+  final translator = GoogleTranslator();
   int currentPageIndex = 0;
   bool singleCityPressed = false;
   bool isApplicable = true;
@@ -1161,6 +1418,11 @@ class _MyAppState extends State<MyApp> {
               icon: Icon(Icons.cloud_circle),
               label: 'الشروط',
             ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.water_drop_outlined),
+              icon: Icon(Icons.water_drop),
+              label: 'clouds and humidity',
+            ),
           ],
         ),
         body: Container(
@@ -1183,7 +1445,7 @@ class _MyAppState extends State<MyApp> {
                   currentPageIndex = index;
                 });
               },
-              itemCount: 5,
+              itemCount: 6,
               itemBuilder: (context, index) {
                 return [
                   buildChoosePage(),
@@ -1191,6 +1453,7 @@ class _MyAppState extends State<MyApp> {
                   buildRankingPage(),
                   buildSelectPage(),
                   buildConditionsPage(),
+                  buildCheckPage()
                 ][index];
               },
             ),

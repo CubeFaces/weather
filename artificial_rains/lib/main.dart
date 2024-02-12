@@ -581,9 +581,9 @@ class _MyAppState extends State<MyApp> {
                             controller: tempController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              hintText: '20',
+                              hintText: 'مثال: 20',
                               helperText:
-                                  '.أدخل درجة الحرارة في نطاق من 0 إلى 60 سلسيوس',
+                                  '.أدخل درجة الحرارة للتراوح ما بين 0-60 سلسيوس',
                               helperStyle: const TextStyle(
                                   color: Colors.white, fontSize: 14),
                               alignLabelWithHint: true,
@@ -637,8 +637,8 @@ class _MyAppState extends State<MyApp> {
                               ),
                               hoverColor: Colors.lightBlue,
                               labelText: '%تغطية السحب',
-                              hintText: '80',
-                              helperText: 'أدخل نسبة تغطية السحب',
+                              hintText: 'مثال : 80 ',
+                              helperText: ' أدخل النسبة المئوية لتغطية السحب لتتراوح ما بين 0-100 '  ,
                               helperStyle: const TextStyle(
                                   color: Colors.white, fontSize: 14),
                               border: OutlineInputBorder(
@@ -676,7 +676,7 @@ class _MyAppState extends State<MyApp> {
                               hoverColor: Colors.lightBlue,
                               labelText: 'الرطوبة',
                               hintText: '80',
-                              helperText: 'أدخل نسبةالرطوبة',
+                              helperText: 'أدخل النسبة المئوية للرطوبة لتتراوح ما بين 0-100',
                               helperStyle: const TextStyle(
                                   color: Colors.white, fontSize: 14),
                               border: OutlineInputBorder(
@@ -698,6 +698,10 @@ class _MyAppState extends State<MyApp> {
                             controller: lastRainedController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
+                               hintText: 'مثال: 12',
+                              helperText: 'أدخل عدد الايام لاخر هطول امطار لتتراوح ما بين 1-365',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
                               labelStyle: const TextStyle(
                                   color: Color.fromARGB(255, 0, 73, 116)),
                               fillColor:
@@ -732,6 +736,10 @@ class _MyAppState extends State<MyApp> {
                             controller: precipitationController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
+                                hintText: 'مثال: 12',
+                              helperText: 'أدخل كميةالهطول لتتراوح ما بين 0-3',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
                               labelStyle: const TextStyle(
                                   color: Color.fromARGB(255, 0, 73, 116)),
                               fillColor:
@@ -766,6 +774,10 @@ class _MyAppState extends State<MyApp> {
                             controller: avgRainfallDaysController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
+                                   hintText: 'مثال: 12',
+                              helperText: 'أدخل متوسط ايام الهطول في السنه لتتراوح ما بين 1-365',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
                               labelStyle: const TextStyle(
                                   color: Color.fromARGB(255, 0, 73, 116)),
                               fillColor:

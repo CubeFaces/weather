@@ -583,7 +583,7 @@ class _MyAppState extends State<MyApp> {
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               hintText: '20',
-                              helperText: '20000000000000',
+                              helperText: '.أدخل درجة الحرارة في نطاق من 0 إلى 60 سلسيوس',helperStyle: const TextStyle(color: Colors.white,fontSize: 14),
                               alignLabelWithHint: true,
                               labelStyle: const TextStyle(
                                 color: Color.fromARGB(255, 0, 73, 116),

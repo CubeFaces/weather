@@ -132,14 +132,25 @@ class _MyAppState extends State<MyApp> {
                 title: Text(applicability[index]),
                 onTap: () {
                   showModalBottomSheet<void>(
+                    isScrollControlled: true,
                     context: context,
                     builder: (BuildContext context) {
+                      List<String> conditionsList = metConditionsList[index];
+                      isApplicable = true; // Reset isApplicable for each modal
+
+                      // Check conditions for the current list
+                      for (int i = 0; i < conditionsList.length; i++) {
+                        if (conditionsList[i] == "Cloud Coverage Low%") {
+                          isApplicable = false;
+                          break;
+                        }
+                      }
                       return Container(
                         decoration: BoxDecoration(
                           color: Colors.white70,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        height: 500,
+                        height: 700,
                         child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -225,38 +236,32 @@ class _MyAppState extends State<MyApp> {
                 }(),
                 onTap: () {
                   showModalBottomSheet<void>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      for (List<String> conditionsList in metConditionsList) {
-                        for (int i = 0; i < conditionsList.length; i++) {
-                          if (conditionsList[i] == "Cloud Coverage Low%") {
-                            isApplicable = false;
-                          }
-                        }
-                      }
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white70,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        height: 500,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              const Text(
-                                ':تعاني هذه المدينة من',
-                                style: TextStyle(fontSize: 20.0),
-                              ),
-                              const SizedBox(height: 10),
-                              // Iterate over each sublist in metConditionsList
-                              for (List<String> conditionsList
-                                  in metConditionsList)
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (BuildContext context) {
+                        List<String> conditionsList = metConditionsList[index];
+                        // Return the modal widget
+                        return Container(
+                          height: 500,
+                          decoration: BoxDecoration(
+                            color: Colors.white70,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                const Text(
+                                  ':تعاني هذه المدينة من',
+                                  style: TextStyle(fontSize: 20.0),
+                                ),
+                                const SizedBox(height: 10),
+                                // Display conditions list
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // Iterate over items in the current sublist
+                                    // Iterate over items in the current conditions list
                                     for (int i = 0;
                                         i < conditionsList.length;
                                         i++)
@@ -269,21 +274,19 @@ class _MyAppState extends State<MyApp> {
                                   ],
                                 ),
 
-                              const SizedBox(height: 10),
-                              ElevatedButton(
-                                child: const Text('إغلاق'),
-                                onPressed: () {
-                                  // Do something with isApplicable
-
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
+                                const SizedBox(height: 10),
+                                ElevatedButton(
+                                  child: const Text('إغلاق'),
+                                  onPressed: () {
+                                    // Do something with isApplicable
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  );
+                        );
+                      });
                 },
               ),
             ),

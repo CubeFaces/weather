@@ -1,18 +1,11 @@
 import 'dart:ui';
 import 'package:artificial_rains/weather_api.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_translate/flutter_translate.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:translator/translator.dart';
 
 Future<void> main() async {
-  var delegate = await LocalizationDelegate.create(
-    fallbackLocale: 'en_US',
-    supportedLocales: ['ar', 'en_US'],
-  );
-
-  runApp(LocalizedApp(delegate, const MyApp()));
+  runApp(const MyApp());
 }
 
 String formatDate(DateTime date) {
@@ -60,7 +53,8 @@ Map<String, String> cityMappingAR = {
 };
 Map<String, String> appMappingAR = {
   'is Able for Artificial Rains': 'قادرة على الأمطار الاصطناعية',
-  'is Not Able for Artificial Rains': 'غير قادرة على الأمطار الاصطناعية',
+  'is Not Able for Artificial Rains':
+      'السحب غير كافية يجب عليك صناعة السحب و لكن سيتم صناعتها بصعوبة',
 };
 Map<String, String> conditionMappingAR = {
   'High Temperature': 'درجة حرارة عالية',
@@ -138,14 +132,25 @@ class _MyAppState extends State<MyApp> {
                 title: Text(applicability[index]),
                 onTap: () {
                   showModalBottomSheet<void>(
+                    isScrollControlled: true,
                     context: context,
                     builder: (BuildContext context) {
+                      List<String> conditionsList = metConditionsList[index];
+                      isApplicable = true; // Reset isApplicable for each modal
+
+                      // Check conditions for the current list
+                      for (int i = 0; i < conditionsList.length; i++) {
+                        if (conditionsList[i] == "Cloud Coverage Low%") {
+                          isApplicable = false;
+                          break;
+                        }
+                      }
                       return Container(
                         decoration: BoxDecoration(
                           color: Colors.white70,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        height: 500,
+                        height: 700,
                         child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -204,7 +209,6 @@ class _MyAppState extends State<MyApp> {
           );
   }
 
-  final translator = GoogleTranslator();
   Widget buildRankingPage() {
     return weatherResultsUpdated.isNotEmpty
         ? ListView.builder(
@@ -232,63 +236,57 @@ class _MyAppState extends State<MyApp> {
                 }(),
                 onTap: () {
                   showModalBottomSheet<void>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      for (List<String> conditionsList in metConditionsList) {
-                        for (int i = 0; i < conditionsList.length; i++) {
-                          if (conditionsList[i] == "Cloud Coverage Low%") {
-                            isApplicable = false;
-                            print(conditionsList[i]);
-                          }
-                        }
-                      }
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white70,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        height: 500,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              const Text(
-                                ':تعاني هذه المدينة من',
-                                style: TextStyle(fontSize: 20.0),
-                              ),
-                              const SizedBox(height: 10),
-
-                              // Check conditions in the outer and inner lists
-                              for (List<String> conditionsList
-                                  in metConditionsList)
-                                for (int i = 0; i < conditionsList.length; i++)
-                                  Column(
-                                    children: [
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (BuildContext context) {
+                        List<String> conditionsList = metConditionsList[index];
+                        // Return the modal widget
+                        return Container(
+                          height: 500,
+                          decoration: BoxDecoration(
+                            color: Colors.white70,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                const Text(
+                                  ':تعاني هذه المدينة من',
+                                  style: TextStyle(fontSize: 20.0),
+                                ),
+                                const SizedBox(height: 10),
+                                // Display conditions list
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Iterate over items in the current conditions list
+                                    for (int i = 0;
+                                        i < conditionsList.length;
+                                        i++)
                                       ListTile(
                                         leading: Text('${i + 1}.'),
                                         title: Text(conditionMappingAR[
                                                 conditionsList[i]]
                                             .toString()),
-                                      )
-                                    ],
-                                  ),
+                                      ),
+                                  ],
+                                ),
 
-                              const SizedBox(height: 10),
-                              ElevatedButton(
-                                child: const Text('إغلاق'),
-                                onPressed: () {
-                                  // Do something with isApplicable
-                                  print('Is Applicable: $isApplicable');
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
+                                const SizedBox(height: 10),
+                                ElevatedButton(
+                                  child: const Text('إغلاق'),
+                                  onPressed: () {
+                                    // Do something with isApplicable
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  );
+                        );
+                      });
                 },
               ),
             ),
@@ -297,65 +295,113 @@ class _MyAppState extends State<MyApp> {
             ? Builder(builder: (context) {
                 return GestureDetector(
                   onTap: () {
-                    showModalBottomSheet<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white70,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          height: 600,
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: cityConditionsList[0].length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Column(
-                                      children: [
-                                        FutureBuilder<String>(
-                                          future: translateTitle(
-                                              cityConditionsList[0][index]),
-                                          builder: (BuildContext context,
-                                              AsyncSnapshot<String> snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
-                                              return const CircularProgressIndicator(); // Or a loading indicator
-                                            } else if (snapshot.hasError) {
-                                              return Text(
-                                                  'Error: ${snapshot.error}');
-                                            } else {
-                                              return Text(
-                                                "${snapshot.data}: ${conditionsStatements[index]}",
-                                                textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                    fontSize: 15),
-                                              );
-                                            }
-                                          },
-                                        ),
-                                        const Divider(
-                                          thickness: 1,
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                                ElevatedButton(
-                                  child: const Text('إغلاق'),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                              ],
+                    if (counter >= 3) {
+                      showModalBottomSheet<void>(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white70,
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                          ),
-                        );
-                      },
-                    );
+                            height: 700,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: cityConditionsList[0].length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            FutureBuilder<String>(
+                                              future: translateTitle(
+                                                  cityConditionsList[0][index]),
+                                              builder: (BuildContext context,
+                                                  AsyncSnapshot<String>
+                                                      snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.waiting) {
+                                                  return const CircularProgressIndicator(); // Or a loading indicator
+                                                } else if (snapshot.hasError) {
+                                                  return Text(
+                                                      'Error: ${snapshot.error}');
+                                                } else {
+                                                  return Text(
+                                                    '${snapshot.data}',
+                                                    textAlign: TextAlign.end,
+                                                    style: const TextStyle(
+                                                        fontSize: 15),
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  const Divider(
+                                    thickness: 2,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      '${conditionsStatements[0]} ${conditionsStatements[1]}',
+                                      textAlign: TextAlign.end,
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    child: const Text('إغلاق'),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white70,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            height: 500,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  const Text(
+                                    'الشروط المقدمة لا تتطلب الأمطار الاصطناعية.',
+                                    style: TextStyle(fontSize: 20.0),
+                                  ),
+                                  ElevatedButton(
+                                    child: const Text('إغلاق'),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
                   },
                   child: Center(
                     child: SizedBox(
@@ -468,7 +514,7 @@ class _MyAppState extends State<MyApp> {
         ElevatedButton(
           onPressed: () async {
             setState(() {
-              int prevPageIndex = (currentPageIndex - 1) % 5;
+              int prevPageIndex = (currentPageIndex - 1) % 6;
               pageController.animateToPage(
                 prevPageIndex,
                 duration: const Duration(milliseconds: 1000),
@@ -499,37 +545,47 @@ class _MyAppState extends State<MyApp> {
                   "${cityMappingAR[r[0]]} ${needMappingAR[r[1]]}";
             });
 
-            conditionsStatements = [];
+            conditionsStatements = [
+              '''
+:تحسين إدارة المياه
+
+ضمان استخدام مائي فعّال من خلال تنفيذ تقنيات مثل الري بالتنقيط وجمع مياه الأمطار
+رصد رطوبة التربة عن كثب وضبط ممارسات الري وفقًا لذلك
+اختيار أصناف المحاصيل المقاومة للجفاف لتخفيف ضغط نقص المياه
+
+''',
+              '''
+:تكييف اختيار المحاصيل والممارسات
+
+اختيار أصناف المحاصيل التي تتحمل الظروف البيئية السائدة، مثل الحرارة أو انخفاض الرطوبة
+تنفيذ ممارسات زراعية مناسبة، مثل زيادة تردد الري أو توفير الظل الكافي للمحاصيل، لتخفيف تأثير الظروف الجوية السلبية'''
+            ];
+            counter = 0;
             for (var condition in cityConditionsList[0]) {
               switch (condition) {
                 case "High Temperature":
-                  conditionsStatements.add(
-                      "يُنصَح بأن يوفِّرَ الفلاحون ظلًا كافيًا للمحاصيل، ويزيدوا من تكرار الري، ويختاروا أصناف المحاصيل التي تتحمل الحرارة.");
+                  counter++;
                   break;
                 case "Cloud Coverage Low%":
-                  conditionsStatements.add(
-                      "عدم وجود السحب يجعل هذه المدينة غير مناسبة للأمطار الاصطناعية. يُنصَح بمراقبة رطوبة التربة عن كثب من قبل الفلاحين.");
+                  counter++;
                   isApplicable = false;
                   break;
                 case "Low Humidity":
-                  conditionsStatements.add(
-                      "يُنصَح بأن يزيد الفلاحون من الري ويطبقون إجراءات الحفاظ على المياه للحفاظ على رطوبة التربة.");
+                  counter++;
                   break;
                 case "No Rainfall Since":
-                  conditionsStatements.add(
-                      "يُنصَح بأن يراقب الفلاحون احتياجات الماء للمحاصيل عن كثب، ويطبقون الري الإضافي، ويأخذون في اعتبارهم أصناف المحاصيل التي تتحمل الجفاف.");
+                  counter++;
                   break;
                 case "Low Average Rainfall Days":
-                  conditionsStatements.add(
-                      "يُنصَح بأن يخطط الفلاحون لاستخدام الماء بكفاءة وتطبيق تقنيات جمع مياه الأمطار.");
+                  counter++;
                   break;
                 case "Low Precipitation":
-                  conditionsStatements.add(
-                      "يُنصَح بأن يطبق الفلاحون تقنيات توفير المياه، مثل الري بالتنقيط، ويتبنون أصناف المحاصيل المقاومة للجفاف.");
+                  counter++;
                   break;
                 default:
-                  conditionsStatements.add(
-                      "شرط غير معترف به. يرجى التشاور مع خبراء الزراعة للحصول على نصائح مخصصة.");
+                  conditionsStatements = [
+                    "شرط غير معترف به. يرجى التشاور مع خبراء الزراعة للحصول على نصائح مخصصة."
+                  ];
               }
             }
           },
@@ -555,28 +611,6 @@ class _MyAppState extends State<MyApp> {
         ),
       ],
     );
-  }
-
-  Future<List<String>> translateConditions(List<String> conditions) async {
-    List<String> translatedConditions = [];
-    for (String condition in conditions) {
-      Translation translation =
-          await translator.translate(condition, from: 'en', to: 'ar');
-      translatedConditions.add(translation.text);
-    }
-    return translatedConditions;
-  }
-
-  Future<String> translateTitle(String title) async {
-    Translation translation =
-        await translator.translate(title, from: 'en', to: 'ar');
-    return translation.text;
-  }
-
-  Future<String> translateCity(String title) async {
-    Translation translation =
-        await translator.translate(title, from: 'ar', to: 'en');
-    return translation.text;
   }
 
   Widget buildConditionsPage() {
@@ -608,6 +642,12 @@ class _MyAppState extends State<MyApp> {
                             controller: tempController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
+                              hintText: 'مثال: 20',
+                              helperText:
+                                  '.أدخل درجة الحرارة للتراوح ما بين 0-60 سلسيوس',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                              alignLabelWithHint: true,
                               labelStyle: const TextStyle(
                                 color: Color.fromARGB(255, 0, 73, 116),
                               ),
@@ -658,6 +698,11 @@ class _MyAppState extends State<MyApp> {
                               ),
                               hoverColor: Colors.lightBlue,
                               labelText: '%تغطية السحب',
+                              hintText: 'مثال : 80 ',
+                              helperText:
+                                  ' أدخل النسبة المئوية لتغطية السحب لتتراوح ما بين 0-100 ',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                                 borderSide: const BorderSide(
@@ -692,6 +737,11 @@ class _MyAppState extends State<MyApp> {
                               ),
                               hoverColor: Colors.lightBlue,
                               labelText: 'الرطوبة',
+                              hintText: '80',
+                              helperText:
+                                  'أدخل النسبة المئوية للرطوبة لتتراوح ما بين 0-100',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                                 borderSide: const BorderSide(
@@ -711,6 +761,11 @@ class _MyAppState extends State<MyApp> {
                             controller: lastRainedController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
+                              hintText: 'مثال: 12',
+                              helperText:
+                                  'أدخل عدد الايام لاخر هطول امطار لتتراوح ما بين 1-365',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
                               labelStyle: const TextStyle(
                                   color: Color.fromARGB(255, 0, 73, 116)),
                               fillColor:
@@ -745,6 +800,10 @@ class _MyAppState extends State<MyApp> {
                             controller: precipitationController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
+                              hintText: 'مثال: 12',
+                              helperText: 'أدخل كميةالهطول لتتراوح ما بين 0-3',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
                               labelStyle: const TextStyle(
                                   color: Color.fromARGB(255, 0, 73, 116)),
                               fillColor:
@@ -779,6 +838,11 @@ class _MyAppState extends State<MyApp> {
                             controller: avgRainfallDaysController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
+                              hintText: 'مثال: 12',
+                              helperText:
+                                  'أدخل متوسط ايام الهطول في السنه لتتراوح ما بين 1-365',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
                               labelStyle: const TextStyle(
                                   color: Color.fromARGB(255, 0, 73, 116)),
                               fillColor:
@@ -965,11 +1029,251 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  Widget buildCheckPage() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 15),
+      child: Center(
+        child: SizedBox(
+          width: 400,
+          height: 320,
+          child: Card(
+            color: const Color.fromARGB(164, 48, 116, 148),
+            child: Builder(
+              builder: (BuildContext context) {
+                return SingleChildScrollView(
+                  child: Form(
+                    key: _formCheckKey,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const Text(
+                            "تحقق من السحب والرطوبة",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                          ),
+                          const SizedBox(height: 10),
+                          TextFormField(
+                            cursorColor: Colors.lightBlue,
+                            controller: cloudCoverageController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelStyle: const TextStyle(
+                                  color: Color.fromARGB(255, 0, 73, 116)),
+                              fillColor:
+                                  const Color.fromARGB(122, 110, 200, 255),
+                              filled: true,
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.lightBlue),
+                              ),
+                              focusColor: Colors.lightBlue,
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.lightBlue, width: 2),
+                              ),
+                              hoverColor: Colors.lightBlue,
+                              labelText: '%تغطية السحب',
+                              helperText: 'أدخل نسبة تغطية السحب',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: const BorderSide(
+                                    width: 10, color: Colors.lightBlue),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'الرجاء إدخال قيمة';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 15),
+                          TextFormField(
+                            cursorColor: Colors.lightBlue,
+                            controller: humidityController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelStyle: const TextStyle(
+                                  color: Color.fromARGB(255, 0, 73, 116)),
+                              fillColor:
+                                  const Color.fromARGB(122, 110, 200, 255),
+                              filled: true,
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.lightBlue),
+                              ),
+                              focusColor: Colors.lightBlue,
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.lightBlue, width: 2),
+                              ),
+                              hoverColor: Colors.lightBlue,
+                              labelText: 'الرطوبة',
+                              helperText: 'أدخل نسبةالرطوبة',
+                              helperStyle: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: const BorderSide(
+                                    width: 10, color: Colors.lightBlue),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'الرجاء إدخال قيمة';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                if (_formCheckKey.currentState!.validate()) {
+                                  List<String> cloudText = [
+                                    ".التغطية السحابية المقدمة تدعم الأمطار الاصطناعية",
+                                    ''
+                                  ];
+
+                                  String humidityText =
+                                      ".الرطوبة تظهر وجود ما يكفي من الماء في السحب لتكون مناسبة للأمطار الاصطناعية";
+
+                                  double cloudCoverage = double.parse(
+                                      cloudCoverageController.text);
+                                  double humidity =
+                                      double.parse(humidityController.text);
+
+                                  if (cloudCoverage <= 40) {
+                                    cloudText[0] =
+                                        "لا توجد سحب كافية للأمطار الاصطناعية، يُوصَى بتكوين السحب";
+                                    cloudText[1] = ":خطوات إنشاءالسحب";
+                                    cloudText.addAll(anthropogenicCloudSteps);
+                                  }
+
+                                  if (humidity <= 40) {
+                                    humidityText =
+                                        ".السُحُب لا تحتوي على ما يكفي من الماء للأمطار الاصطناعية. يُطلب منك إضافة المزيد من الملح";
+                                  }
+
+                                  showModalBottomSheet<void>(
+                                    isScrollControlled: true,
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white70,
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        height: 800,
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              ListView.builder(
+                                                shrinkWrap: true,
+                                                itemCount: cloudText.length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int i) {
+                                                  return ListTile(
+                                                    title: Text(
+                                                      cloudText[i],
+                                                      textAlign: TextAlign.end,
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                humidityText,
+                                                textAlign: TextAlign.end,
+                                                style: const TextStyle(
+                                                    fontSize: 16),
+                                              ),
+                                              ElevatedButton(
+                                                child: const Text('إغلاق'),
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }
+                              });
+                            },
+                            style: const ButtonStyle(
+                              shape: MaterialStatePropertyAll(
+                                BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(5),
+                                  ),
+                                ),
+                              ),
+                              backgroundColor: MaterialStatePropertyAll(
+                                Color.fromARGB(255, 0, 102, 255),
+                              ),
+                            ),
+                            child: const Text(
+                              'تحقق',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<List<String>> translateConditions(List<String> conditions) async {
+    List<String> translatedConditions = [];
+    for (String condition in conditions) {
+      Translation translation =
+          await translator.translate(condition, from: 'en', to: 'ar');
+      translatedConditions.add(translation.text);
+    }
+    return translatedConditions;
+  }
+
+  Future<String> translateTitle(String title) async {
+    Translation translation =
+        await translator.translate(title, from: 'en', to: 'ar');
+    return translation.text;
+  }
+
+  Future<String> translateCity(String title) async {
+    Translation translation =
+        await translator.translate(title, from: 'ar', to: 'en');
+    return translation.text;
+  }
+
+  final translator = GoogleTranslator();
+  int counter = 0;
   int currentPageIndex = 0;
   bool singleCityPressed = false;
   bool isApplicable = true;
   PageController pageController = PageController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formCheckKey = GlobalKey<FormState>();
   TextEditingController tempController = TextEditingController();
   TextEditingController cloudCoverageController = TextEditingController();
   TextEditingController humidityController = TextEditingController();
@@ -1066,8 +1370,6 @@ class _MyAppState extends State<MyApp> {
       // Return the values as a list
       return [city, restOfSentence];
     } else {
-      print("Invalid sentence format");
-
       // If the specified sentence is not found, set the default values
       String city = "";
       String restOfSentence = "?";
@@ -1103,200 +1405,190 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    var localizationDelegate = LocalizedApp.of(context).delegate;
-    return LocalizationProvider(
-      state: LocalizationProvider.of(context).state,
-      child: MaterialApp(
-        localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-          localizationDelegate
-        ],
-        supportedLocales: localizationDelegate.supportedLocales,
-        locale: localizationDelegate.currentLocale,
-        home: Scaffold(
-          extendBodyBehindAppBar: true,
-          extendBody: true,
-          appBar: AppBar(
-            title: const Center(
-              child: Text(
-                "الأمطار الصناعية",
-              ),
+    return MaterialApp(
+      home: Scaffold(
+        extendBodyBehindAppBar: true,
+        extendBody: true,
+        appBar: AppBar(
+          title: const Center(
+            child: Text(
+              "الأمطار الصناعية",
             ),
-            backgroundColor: const Color.fromARGB(148, 3, 168, 244),
-            foregroundColor: Colors.white,
           ),
-          bottomNavigationBar: NavigationBar(
-            backgroundColor: const Color.fromARGB(200, 255, 255, 255),
-            onDestinationSelected: (int index) {
-              pageController.animateToPage(
-                index,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-              );
-            },
-            indicatorColor: Colors.lightBlue,
-            selectedIndex: currentPageIndex,
-            destinations: const <Widget>[
-              NavigationDestination(
-                selectedIcon: Icon(Icons.add_circle),
-                icon: Icon(Icons.add_circle_outline_outlined),
-                label: 'اختر',
-              ),
-              NavigationDestination(
-                selectedIcon: Icon(Icons.check_circle_outline_outlined),
-                icon: Icon(Icons.check_circle),
-                label: 'التطبيقية',
-              ),
-              NavigationDestination(
-                selectedIcon: Icon(Icons.format_list_numbered_rounded),
-                icon: Icon(Icons.view_list_rounded),
-                label: 'التصنيف',
-              ),
-              NavigationDestination(
-                selectedIcon: Icon(Icons.location_city_rounded),
-                icon: Icon(Icons.location_city_sharp),
-                label: 'اختر',
-              ),
-              NavigationDestination(
-                selectedIcon: Icon(Icons.cloud_circle_outlined),
-                icon: Icon(Icons.cloud_circle),
-                label: 'الشروط',
-              ),
-            ],
-          ),
-          body: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage(
-                  "https://images.unsplash.com/photo-1534088568595-a066f410bcda?q=80&w=1651&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                ),
-              ),
+          backgroundColor: const Color.fromARGB(148, 3, 168, 244),
+          foregroundColor: Colors.white,
+        ),
+        bottomNavigationBar: NavigationBar(
+          backgroundColor: const Color.fromARGB(200, 255, 255, 255),
+          onDestinationSelected: (int index) {
+            pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          },
+          indicatorColor: Colors.lightBlue,
+          selectedIndex: currentPageIndex,
+          destinations: const <Widget>[
+            NavigationDestination(
+              selectedIcon: Icon(Icons.add_circle),
+              icon: Icon(Icons.add_circle_outline_outlined),
+              label: 'اختر',
             ),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 12 / 4, sigmaY: 12 / 4),
-              child: PageView.builder(
-                controller: pageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    currentPageIndex = index;
-                  });
-                },
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return [
-                    buildChoosePage(),
-                    buildApplicabilityPage(),
-                    buildRankingPage(),
-                    buildSelectPage(),
-                    buildConditionsPage(),
-                  ][index];
-                },
+            NavigationDestination(
+              selectedIcon: Icon(Icons.check_circle_outline_outlined),
+              icon: Icon(Icons.check_circle),
+              label: 'التطبيقية',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.format_list_numbered_rounded),
+              icon: Icon(Icons.view_list_rounded),
+              label: 'التصنيف',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.location_city_rounded),
+              icon: Icon(Icons.location_city_sharp),
+              label: 'اختر',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.cloud_circle_outlined),
+              icon: Icon(Icons.cloud_circle),
+              label: 'الشروط',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.water_drop_outlined),
+              icon: Icon(Icons.water_drop),
+              label: "سحب ورطوبة",
+            ),
+          ],
+        ),
+        body: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: NetworkImage(
+                "https://images.unsplash.com/photo-1534088568595-a066f410bcda?q=80&w=1651&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
               ),
             ),
           ),
-          floatingActionButton: Visibility(
-            visible: currentPageIndex == 0 ? true : false,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 30.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 100,
-                    child: FloatingActionButton(
-                      backgroundColor: Colors.lightBlueAccent,
-                      onPressed: () async {
-                        setState(() {
-                          int nextPageIndex = (currentPageIndex + 2) % 5;
-                          pageController.animateToPage(
-                            nextPageIndex,
-                            duration: const Duration(milliseconds: 1000),
-                            curve: Curves.easeInOut,
-                          );
-
-                          singleCityPressed = false;
-                        });
-                        weatherResults = [];
-                        selectedCities = [];
-                        weatherResultsUpdated = [];
-                        applicability = [];
-
-                        for (var menu in dropdownMenus) {
-                          selectedCities.add(menu.currentCity);
-                        }
-
-                        for (var city in selectedCities) {
-                          String result =
-                              await weatherUtility.needsArtificialRain(
-                            city,
-                            MyApp.startingDate,
-                            MyApp.endingDate,
-                          );
-                          setState(() {
-                            weatherResults.add(result);
-                          });
-                        }
-                        setState(() {
-                          weatherResultsUpdated =
-                              updateAndSortWeatherResults(weatherResults);
-                          print(weatherResults);
-                          print(weatherResultsUpdated);
-                          metConditionsList = extractAndRemoveWeatherConditions(
-                              weatherResultsUpdated);
-
-                          print(weatherResults);
-                          print(weatherResultsUpdated);
-                          applicability = extractAndRemoveApplicability(
-                              weatherResultsUpdated);
-                        });
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'قارن',
-                          textAlign: TextAlign.center,
-                          softWrap: false,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 120,
-                    child: FloatingActionButton(
-                      backgroundColor: Colors.lightBlueAccent,
-                      onPressed: () {
-                        setState(
-                          () {
-                            dropdownMenus.add(
-                              DropdownCityMenu(
-                                key: UniqueKey(),
-                              ),
-                            );
-                          },
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12 / 4, sigmaY: 12 / 4),
+            child: PageView.builder(
+              controller: pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  currentPageIndex = index;
+                });
+              },
+              itemCount: 6,
+              itemBuilder: (context, index) {
+                return [
+                  buildChoosePage(),
+                  buildApplicabilityPage(),
+                  buildRankingPage(),
+                  buildSelectPage(),
+                  buildConditionsPage(),
+                  buildCheckPage(),
+                ][index];
+              },
+            ),
+          ),
+        ),
+        floatingActionButton: Visibility(
+          visible: currentPageIndex == 0 ? true : false,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 30.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.lightBlueAccent,
+                    onPressed: () async {
+                      setState(() {
+                        int nextPageIndex = (currentPageIndex + 2) % 6;
+                        pageController.animateToPage(
+                          nextPageIndex,
+                          duration: const Duration(milliseconds: 1000),
+                          curve: Curves.easeInOut,
                         );
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.only(left: 15.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "أضف مدينة",
-                              textAlign: TextAlign.center,
-                            ),
-                            Icon(Icons.add)
-                          ],
-                        ),
+
+                        singleCityPressed = false;
+                      });
+                      weatherResults = [];
+                      selectedCities = [];
+                      weatherResultsUpdated = [];
+                      applicability = [];
+
+                      for (var menu in dropdownMenus) {
+                        selectedCities.add(menu.currentCity);
+                      }
+
+                      for (var city in selectedCities) {
+                        String result =
+                            await weatherUtility.needsArtificialRain(
+                          city,
+                          MyApp.startingDate,
+                          MyApp.endingDate,
+                        );
+                        setState(() {
+                          weatherResults.add(result);
+                        });
+                      }
+                      setState(() {
+                        weatherResultsUpdated =
+                            updateAndSortWeatherResults(weatherResults);
+                        metConditionsList = extractAndRemoveWeatherConditions(
+                            weatherResultsUpdated);
+
+                        applicability = extractAndRemoveApplicability(
+                            weatherResultsUpdated);
+                      });
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'قارن',
+                        textAlign: TextAlign.center,
+                        softWrap: false,
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+                SizedBox(
+                  width: 120,
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.lightBlueAccent,
+                    onPressed: () {
+                      setState(
+                        () {
+                          dropdownMenus.add(
+                            DropdownCityMenu(
+                              key: UniqueKey(),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 15.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            "أضف مدينة",
+                            textAlign: TextAlign.center,
+                          ),
+                          Icon(Icons.add)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

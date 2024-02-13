@@ -292,65 +292,113 @@ class _MyAppState extends State<MyApp> {
             ? Builder(builder: (context) {
                 return GestureDetector(
                   onTap: () {
-                    showModalBottomSheet<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white70,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          height: 600,
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: cityConditionsList[0].length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Column(
-                                      children: [
-                                        FutureBuilder<String>(
-                                          future: translateTitle(
-                                              cityConditionsList[0][index]),
-                                          builder: (BuildContext context,
-                                              AsyncSnapshot<String> snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
-                                              return const CircularProgressIndicator(); // Or a loading indicator
-                                            } else if (snapshot.hasError) {
-                                              return Text(
-                                                  'Error: ${snapshot.error}');
-                                            } else {
-                                              return Text(
-                                                "${snapshot.data}: ${conditionsStatements[index]}",
-                                                textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                    fontSize: 15),
-                                              );
-                                            }
-                                          },
-                                        ),
-                                        const Divider(
-                                          thickness: 1,
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                                ElevatedButton(
-                                  child: const Text('إغلاق'),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                              ],
+                    if (counter >= 3) {
+                      showModalBottomSheet<void>(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white70,
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                          ),
-                        );
-                      },
-                    );
+                            height: 700,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: cityConditionsList[0].length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            FutureBuilder<String>(
+                                              future: translateTitle(
+                                                  cityConditionsList[0][index]),
+                                              builder: (BuildContext context,
+                                                  AsyncSnapshot<String>
+                                                      snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.waiting) {
+                                                  return const CircularProgressIndicator(); // Or a loading indicator
+                                                } else if (snapshot.hasError) {
+                                                  return Text(
+                                                      'Error: ${snapshot.error}');
+                                                } else {
+                                                  return Text(
+                                                    '${snapshot.data}',
+                                                    textAlign: TextAlign.end,
+                                                    style: const TextStyle(
+                                                        fontSize: 15),
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  const Divider(
+                                    thickness: 2,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      '${conditionsStatements[0]} ${conditionsStatements[1]}',
+                                      textAlign: TextAlign.end,
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    child: const Text('إغلاق'),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white70,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            height: 500,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  const Text(
+                                    'الشروط المقدمة لا تتطلب الأمطار الاصطناعية.',
+                                    style: TextStyle(fontSize: 20.0),
+                                  ),
+                                  ElevatedButton(
+                                    child: const Text('إغلاق'),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
                   },
                   child: Center(
                     child: SizedBox(
@@ -463,7 +511,7 @@ class _MyAppState extends State<MyApp> {
         ElevatedButton(
           onPressed: () async {
             setState(() {
-              int prevPageIndex = (currentPageIndex - 1) % 5;
+              int prevPageIndex = (currentPageIndex - 1) % 6;
               pageController.animateToPage(
                 prevPageIndex,
                 duration: const Duration(milliseconds: 1000),
@@ -494,37 +542,47 @@ class _MyAppState extends State<MyApp> {
                   "${cityMappingAR[r[0]]} ${needMappingAR[r[1]]}";
             });
 
-            conditionsStatements = [];
+            conditionsStatements = [
+              '''
+:تحسين إدارة المياه
+
+ضمان استخدام مائي فعّال من خلال تنفيذ تقنيات مثل الري بالتنقيط وجمع مياه الأمطار
+رصد رطوبة التربة عن كثب وضبط ممارسات الري وفقًا لذلك
+اختيار أصناف المحاصيل المقاومة للجفاف لتخفيف ضغط نقص المياه
+
+''',
+              '''
+:تكييف اختيار المحاصيل والممارسات
+
+اختيار أصناف المحاصيل التي تتحمل الظروف البيئية السائدة، مثل الحرارة أو انخفاض الرطوبة
+تنفيذ ممارسات زراعية مناسبة، مثل زيادة تردد الري أو توفير الظل الكافي للمحاصيل، لتخفيف تأثير الظروف الجوية السلبية'''
+            ];
+            counter = 0;
             for (var condition in cityConditionsList[0]) {
               switch (condition) {
                 case "High Temperature":
-                  conditionsStatements.add(
-                      "يُنصَح بأن يوفِّرَ المزارعون ظلًا كافيًا للمحاصيل، ويزيدوا من تكرار الري، ويختاروا أصناف المحاصيل التي تتحمل الحرارة.");
+                  counter++;
                   break;
                 case "Cloud Coverage Low%":
-                  conditionsStatements.add(
-                      "عدم وجود السحب يجعل هذه المدينة غير مناسبة للأمطار الاصطناعية. يُنصَح بمراقبة رطوبة التربة عن كثب من قبل المزارعين.");
+                  counter++;
                   isApplicable = false;
                   break;
                 case "Low Humidity":
-                  conditionsStatements.add(
-                      "يُنصَح بأن يزيد المزارعون من الري ويطبقون إجراءات الحفاظ على المياه للحفاظ على رطوبة التربة.");
+                  counter++;
                   break;
                 case "No Rainfall Since":
-                  conditionsStatements.add(
-                      "يُنصَح بأن يراقب المزارعون احتياجات الماء للمحاصيل عن كثب، ويطبقون الري الإضافي، ويأخذون في اعتبارهم أصناف المحاصيل التي تتحمل الجفاف.");
+                  counter++;
                   break;
                 case "Low Average Rainfall Days":
-                  conditionsStatements.add(
-                      "يُنصَح بأن يخطط المزارعون لاستخدام الماء بكفاءة وتطبيق تقنيات جمع مياه الأمطار.");
+                  counter++;
                   break;
                 case "Low Precipitation":
-                  conditionsStatements.add(
-                      "يُنصَح بأن يطبق المزارعون تقنيات توفير المياه، مثل الري بالتنقيط، ويتبنون أصناف المحاصيل المقاومة للجفاف.");
+                  counter++;
                   break;
                 default:
-                  conditionsStatements.add(
-                      "شرط غير معترف به. يرجى التشاور مع خبراء الزراعة للحصول على نصائح مخصصة.");
+                  conditionsStatements = [
+                    "شرط غير معترف به. يرجى التشاور مع خبراء الزراعة للحصول على نصائح مخصصة."
+                  ];
               }
             }
           },
@@ -638,7 +696,8 @@ class _MyAppState extends State<MyApp> {
                               hoverColor: Colors.lightBlue,
                               labelText: '%تغطية السحب',
                               hintText: 'مثال : 80 ',
-                              helperText: ' أدخل النسبة المئوية لتغطية السحب لتتراوح ما بين 0-100 '  ,
+                              helperText:
+                                  ' أدخل النسبة المئوية لتغطية السحب لتتراوح ما بين 0-100 ',
                               helperStyle: const TextStyle(
                                   color: Colors.white, fontSize: 14),
                               border: OutlineInputBorder(
@@ -676,7 +735,8 @@ class _MyAppState extends State<MyApp> {
                               hoverColor: Colors.lightBlue,
                               labelText: 'الرطوبة',
                               hintText: '80',
-                              helperText: 'أدخل النسبة المئوية للرطوبة لتتراوح ما بين 0-100',
+                              helperText:
+                                  'أدخل النسبة المئوية للرطوبة لتتراوح ما بين 0-100',
                               helperStyle: const TextStyle(
                                   color: Colors.white, fontSize: 14),
                               border: OutlineInputBorder(
@@ -698,8 +758,9 @@ class _MyAppState extends State<MyApp> {
                             controller: lastRainedController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                               hintText: 'مثال: 12',
-                              helperText: 'أدخل عدد الايام لاخر هطول امطار لتتراوح ما بين 1-365',
+                              hintText: 'مثال: 12',
+                              helperText:
+                                  'أدخل عدد الايام لاخر هطول امطار لتتراوح ما بين 1-365',
                               helperStyle: const TextStyle(
                                   color: Colors.white, fontSize: 14),
                               labelStyle: const TextStyle(
@@ -736,7 +797,7 @@ class _MyAppState extends State<MyApp> {
                             controller: precipitationController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                                hintText: 'مثال: 12',
+                              hintText: 'مثال: 12',
                               helperText: 'أدخل كميةالهطول لتتراوح ما بين 0-3',
                               helperStyle: const TextStyle(
                                   color: Colors.white, fontSize: 14),
@@ -774,8 +835,9 @@ class _MyAppState extends State<MyApp> {
                             controller: avgRainfallDaysController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                                   hintText: 'مثال: 12',
-                              helperText: 'أدخل متوسط ايام الهطول في السنه لتتراوح ما بين 1-365',
+                              hintText: 'مثال: 12',
+                              helperText:
+                                  'أدخل متوسط ايام الهطول في السنه لتتراوح ما بين 1-365',
                               helperStyle: const TextStyle(
                                   color: Colors.white, fontSize: 14),
                               labelStyle: const TextStyle(
@@ -970,24 +1032,25 @@ class _MyAppState extends State<MyApp> {
       child: Center(
         child: SizedBox(
           width: 400,
-          height: 700,
+          height: 320,
           child: Card(
             color: const Color.fromARGB(164, 48, 116, 148),
             child: Builder(
               builder: (BuildContext context) {
                 return SingleChildScrollView(
                   child: Form(
-                    key: _formKey,
+                    key: _formCheckKey,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           const Text(
-                            "check Clouds and Humidity",
+                            "تحقق من السحب والرطوبة",
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 20, color: Colors.white),
                           ),
+                          const SizedBox(height: 10),
                           TextFormField(
                             cursorColor: Colors.lightBlue,
                             controller: cloudCoverageController,
@@ -1008,7 +1071,6 @@ class _MyAppState extends State<MyApp> {
                               ),
                               hoverColor: Colors.lightBlue,
                               labelText: '%تغطية السحب',
-                              hintText: '80',
                               helperText: 'أدخل نسبة تغطية السحب',
                               helperStyle: const TextStyle(
                                   color: Colors.white, fontSize: 14),
@@ -1046,7 +1108,6 @@ class _MyAppState extends State<MyApp> {
                               ),
                               hoverColor: Colors.lightBlue,
                               labelText: 'الرطوبة',
-                              hintText: '80',
                               helperText: 'أدخل نسبةالرطوبة',
                               helperStyle: const TextStyle(
                                   color: Colors.white, fontSize: 14),
@@ -1067,127 +1128,83 @@ class _MyAppState extends State<MyApp> {
                           ElevatedButton(
                             onPressed: () {
                               setState(() {
-                                if (_formKey.currentState!.validate()) {
-                                  int counter = 0;
+                                if (_formCheckKey.currentState!.validate()) {
+                                  List<String> cloudText = [
+                                    ".التغطية السحابية المقدمة تدعم الأمطار الاصطناعية",
+                                    ''
+                                  ];
 
-                                  String applicability =
-                                      "قابلة للأمطار الاصطناعية. يمكن إنشاء الأمطار الاصطناعية من خلال تحفيز السحب.";
-                                  // Access the entered values using text controllers
-                                  double temperature =
-                                      double.parse(tempController.text);
+                                  String humidityText =
+                                      ".الرطوبة تظهر وجود ما يكفي من الماء في السحب لتكون مناسبة للأمطار الاصطناعية";
+
                                   double cloudCoverage = double.parse(
                                       cloudCoverageController.text);
                                   double humidity =
                                       double.parse(humidityController.text);
-                                  double lastRained =
-                                      double.parse(lastRainedController.text);
-                                  double precipitation = double.parse(
-                                      precipitationController.text);
-                                  double avgRainfallDays = double.parse(
-                                      avgRainfallDaysController.text);
-                                  if (temperature >
-                                      WeatherUtility
-                                          .HIGH_TEMPERATURE_THRESHOLD) {
-                                    counter++;
+
+                                  if (cloudCoverage <= 40) {
+                                    cloudText[0] =
+                                        "لا توجد سحب كافية للأمطار الاصطناعية، يُوصَى بتكوين السحب";
+                                    cloudText[1] = ":خطوات إنشاءالسحب";
+                                    cloudText.addAll(anthropogenicCloudSteps);
                                   }
 
-                                  if (cloudCoverage <=
-                                      WeatherUtility.LOW_CLOUD_THRESHOLD) {
-                                    counter++;
-                                    applicability =
-                                        "لا يوجد ما يكفي من السحب لتحفيز السحب، يُقترح استخدام السحب الاصطناعية\n\nثلاثة شروط تحتاج إلى توفرها لتشكيل سحابة بشرية:\n\n1. يجب أن يكون الهواء قريبًا من التشبع ببخار الماء.\n\n2. يجب أن يتم تبريد الهواء إلى درجة الندى بالنسبة للماء (أو الجليد) لتكثيف (أو تحول) جزء من بخار الماء.\n\n3. يجب أن يحتوي الهواء على نوى تكثيف، وهي جسيمات صلبة صغيرة، حيث يبدأ التكثيف/التحول..";
+                                  if (humidity <= 40) {
+                                    humidityText =
+                                        ".السُحُب لا تحتوي على ما يكفي من الماء للأمطار الاصطناعية. يُطلب منك إضافة المزيد من الملح";
                                   }
 
-                                  if (humidity <=
-                                      WeatherUtility.LOW_HUMIDITY_THRESHOLD) {
-                                    counter++;
-                                  }
-
-                                  if (lastRained >=
-                                      WeatherUtility
-                                          .DAYS_SINCE_RAINFALL_THRESHOLD) {
-                                    counter++;
-                                  }
-
-                                  if (avgRainfallDays <=
-                                      WeatherUtility
-                                          .LOW_RAINFALL_DAYSAVG_THRESHOLD) {
-                                    counter++;
-                                  }
-
-                                  if (precipitation <=
-                                      WeatherUtility
-                                          .LOW_PRECIPITATION_THRESHOLD) {
-                                    counter++;
-                                  }
-
-                                  if (counter >= 3) {
-                                    showModalBottomSheet<void>(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white70,
-                                            borderRadius:
-                                                BorderRadius.circular(20),
+                                  showModalBottomSheet<void>(
+                                    isScrollControlled: true,
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white70,
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        height: 800,
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              ListView.builder(
+                                                shrinkWrap: true,
+                                                itemCount: cloudText.length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int i) {
+                                                  return ListTile(
+                                                    title: Text(
+                                                      cloudText[i],
+                                                      textAlign: TextAlign.end,
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                humidityText,
+                                                textAlign: TextAlign.end,
+                                                style: const TextStyle(
+                                                    fontSize: 16),
+                                              ),
+                                              ElevatedButton(
+                                                child: const Text('إغلاق'),
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                              ),
+                                            ],
                                           ),
-                                          height: 500,
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                Text(
-                                                  'تحتاج إلى أمطار اصطناعية, $applicability',
-                                                  style: const TextStyle(
-                                                      fontSize: 20.0),
-                                                ),
-                                                ElevatedButton(
-                                                  child: const Text('إغلاق'),
-                                                  onPressed: () =>
-                                                      Navigator.pop(context),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  } else {
-                                    showModalBottomSheet<void>(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white70,
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          ),
-                                          height: 500,
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                const Text(
-                                                  'الشروط المقدمة لا تتطلب الأمطار الاصطناعية.',
-                                                  style:
-                                                      TextStyle(fontSize: 20.0),
-                                                ),
-                                                ElevatedButton(
-                                                  child: const Text('إغلاق'),
-                                                  onPressed: () =>
-                                                      Navigator.pop(context),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  }
+                                        ),
+                                      );
+                                    },
+                                  );
                                 }
                               });
                             },
@@ -1208,6 +1225,9 @@ class _MyAppState extends State<MyApp> {
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
+                          const SizedBox(
+                            height: 10,
+                          )
                         ],
                       ),
                     ),
@@ -1244,11 +1264,13 @@ class _MyAppState extends State<MyApp> {
   }
 
   final translator = GoogleTranslator();
+  int counter = 0;
   int currentPageIndex = 0;
   bool singleCityPressed = false;
   bool isApplicable = true;
   PageController pageController = PageController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formCheckKey = GlobalKey<FormState>();
   TextEditingController tempController = TextEditingController();
   TextEditingController cloudCoverageController = TextEditingController();
   TextEditingController humidityController = TextEditingController();
@@ -1433,7 +1455,7 @@ class _MyAppState extends State<MyApp> {
             NavigationDestination(
               selectedIcon: Icon(Icons.water_drop_outlined),
               icon: Icon(Icons.water_drop),
-              label: 'clouds and humidity',
+              label: "سحب ورطوبة",
             ),
           ],
         ),
@@ -1465,7 +1487,7 @@ class _MyAppState extends State<MyApp> {
                   buildRankingPage(),
                   buildSelectPage(),
                   buildConditionsPage(),
-                  buildCheckPage()
+                  buildCheckPage(),
                 ][index];
               },
             ),
@@ -1485,7 +1507,7 @@ class _MyAppState extends State<MyApp> {
                     backgroundColor: Colors.lightBlueAccent,
                     onPressed: () async {
                       setState(() {
-                        int nextPageIndex = (currentPageIndex + 2) % 5;
+                        int nextPageIndex = (currentPageIndex + 2) % 6;
                         pageController.animateToPage(
                           nextPageIndex,
                           duration: const Duration(milliseconds: 1000),

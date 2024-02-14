@@ -1,5 +1,5 @@
 name: artificial_rains
-description: "A new Flutter project."
+description: "Description:\nDiscover the optimal agricultural strategies for Kuwaiti cities with our comprehensive analysis app, Kuwait Cities Analysis: Artificial Rain Advisor. Tailored specifically for Kuwait's unique climate, this app offers invaluable insights into city-specific agricultural needs, ranking, and artificial rain requirements.\n\nKey Features:\n\nCity Analysis: Access detailed analyses and rankings for Kuwaiti cities, providing crucial information on agricultural viability and artificial rain necessity.\nArtificial Rain Recommendations: Learn which cities require artificial rain to sustain agriculture and which do not, based on advanced data analysis.\nIndividual City Insights: Dive deeper into the specifics of a chosen city, receiving detailed advice for farmers and additional insights into its agricultural landscape.\nCustom Weather Evaluation: Input weather parameters to assess whether a specific set of conditions warrants artificial rain and to determine a city's eligibility for such measures.\nKuwait Cities Analysis: Artificial Rain Advisor empowers farmers, policymakers, and citizens alike with actionable intelligence for sustainable agriculture in Kuwait. Download now and harness the power of data-driven decision-making for a greener future.\n"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 2.0.5
 
 environment:
   sdk: ">=3.2.6 <4.0.0"
@@ -34,10 +34,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  flutter_translate: ^4.0.4
   intl: ^0.18.1
-  flutter_localizations:
-    sdk: flutter
   translator: ^1.0.0
   http: ^1.2.0
 

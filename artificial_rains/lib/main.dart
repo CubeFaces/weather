@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:artificial_rains/landing.dart';
 import 'package:artificial_rains/weather_api.dart';
 import 'package:artificial_rains/widgets/citymenu.dart';
 import 'package:artificial_rains/widgets/datepicker.dart';
@@ -6,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:translator/translator.dart';
 
-Future<void> main() async {
-  runApp(const MyApp());
+void main() {
+  runApp(const MaterialApp(
+    home: LandingPage(),
+  ));
 }
 
 String formatDate(DateTime date) {
@@ -1509,6 +1512,7 @@ class _MyAppState extends State<MyApp> {
                 SizedBox(
                   width: 100,
                   child: FloatingActionButton(
+                    heroTag: 'another_unique_tag_for_floating_action_button',
                     backgroundColor: Colors.lightBlueAccent,
                     onPressed: () async {
                       setState(() {
@@ -1564,6 +1568,7 @@ class _MyAppState extends State<MyApp> {
                 SizedBox(
                   width: 120,
                   child: FloatingActionButton(
+                    heroTag: 'unique_tag_for_floating_action_button',
                     backgroundColor: Colors.lightBlueAccent,
                     onPressed: () {
                       setState(
